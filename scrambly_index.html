@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scrambly — A Calm Anagram Word Game for iPhone &amp; iPad</title>
+<meta name="description" content="Scrambly is a casual anagram word game. Unscramble the letters and find every word. Free on iPhone and iPad. No paywalls, no pressure, no nonsense.">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Scrambly — A Calm Anagram Word Game">
+<meta property="og:description" content="Find every word hidden in every set of scrambled letters. Free anagram puzzle game for iPhone and iPad.">
+<meta property="og:image" content="assets/og-image.png">
+<meta property="og:url" content="https://apptato.github.io/scrambly/">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Scrambly — A Calm Anagram Word Game">
+<meta name="twitter:description" content="Find every word hidden in every set of scrambled letters. Free anagram puzzle game for iPhone and iPad.">
+<meta name="twitter:image" content="assets/og-image.png">
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Scrambly",
+  "operatingSystem": "iOS",
+  "applicationCategory": "GameApplication",
+  "applicationSubCategory": "Word Game",
+  "description": "A casual anagram word game. Unscramble letters to find every hidden word. Free on iPhone and iPad.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Peter Li"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Apptato"
+  }
+}
+</script>
+
+<style>
+  :root {
+    --purple-light: #5B3A8C;
+    --purple-mid: #3D2468;
+    --purple-deep: #1F1240;
+    --gold: #F5C842;
+    --gold-dark: #D9A91C;
+    --text-light: #FFFFFF;
+    --text-muted: rgba(255, 255, 255, 0.75);
+    --text-dim: rgba(255, 255, 255, 0.55);
+    --card-bg: rgba(255, 255, 255, 0.07);
+    --card-border: rgba(255, 255, 255, 0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Arial Rounded MT Bold", "Helvetica Rounded", system-ui, sans-serif;
+    background: linear-gradient(135deg, var(--purple-light) 0%, var(--purple-mid) 50%, var(--purple-deep) 100%);
+    background-attachment: fixed;
+    color: var(--text-light);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* Header */
+  header {
+    padding: 24px 0;
+    position: sticky;
+    top: 0;
+    background: rgba(31, 18, 64, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 100;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--text-light);
+  }
+
+  .logo-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 9px;
+  }
+
+  .logo-name {
+    font-size: 1.4em;
+    font-weight: 900;
+  }
+
+  nav ul {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95em;
+    transition: color 0.2s;
+  }
+
+  nav a:hover { color: var(--gold); }
+
+  .header-cta {
+    background: var(--gold);
+    color: var(--purple-deep);
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-weight: 800;
+    text-decoration: none;
+    font-size: 0.95em;
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  .header-cta:hover {
+    background: var(--gold-dark);
+    transform: translateY(-1px);
+  }
+
+  /* Hero */
+  .hero {
+    padding: 80px 0 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .hero-text h1 {
+    font-size: 3.4em;
+    line-height: 1.1;
+    font-weight: 900;
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-text h1 .accent { color: var(--gold); }
+
+  .hero-text p {
+    font-size: 1.2em;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    max-width: 480px;
+  }
+
+  .app-store-badge {
+    display: inline-block;
+    transition: transform 0.2s;
+  }
+
+  .app-store-badge:hover { transform: translateY(-2px); }
+
+  .app-store-badge img {
+    height: 56px;
+  }
+
+  .hero-screenshot {
+    text-align: center;
+  }
+
+  .hero-screenshot img {
+    max-width: 320px;
+    width: 100%;
+    border-radius: 32px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Section base */
+  section {
+    padding: 80px 0;
+  }
+
+  .section-eyebrow {
+    color: var(--gold);
+    font-weight: 800;
+    font-size: 0.9em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-size: 2.4em;
+    font-weight: 900;
+    margin-bottom: 48px;
+    letter-spacing: -0.02em;
+    max-width: 720px;
+  }
+
+  /* How It Works */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .step {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    padding: 32px;
+  }
+
+  .step-num {
+    color: var(--gold);
+    font-weight: 800;
+    font-size: 0.85em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .step h3 {
+    font-size: 1.3em;
+    font-weight: 800;
+    margin-bottom: 12px;
+  }
+
+  .step p {
+    color: var(--text-muted);
+    font-size: 0.98em;
+  }
+
+  /* Features */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .feature {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    padding: 28px;
+  }
+
+  .feature h3 {
+    font-size: 1.15em;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .feature p {
+    color: var(--text-muted);
+    font-size: 0.95em;
+  }
+
+  /* Screenshots */
+  .screenshots {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .screenshots img {
+    width: 100%;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  /* FAQ */
+  .faq {
+    max-width: 800px;
+  }
+
+  details {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    cursor: pointer;
+  }
+
+  summary {
+    font-weight: 700;
+    font-size: 1.05em;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  summary::after {
+    content: "+";
+    color: var(--gold);
+    font-weight: 900;
+    font-size: 1.4em;
+    transition: transform 0.2s;
+  }
+
+  details[open] summary::after {
+    transform: rotate(45deg);
+  }
+
+  details p {
+    color: var(--text-muted);
+    margin-top: 12px;
+    font-size: 0.98em;
+  }
+
+  /* Bottom CTA */
+  .bottom-cta {
+    text-align: center;
+    padding: 100px 0;
+  }
+
+  .bottom-cta h2 {
+    font-size: 2.6em;
+    font-weight: 900;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+
+  .bottom-cta p {
+    color: var(--text-muted);
+    font-size: 1.15em;
+    margin-bottom: 32px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Footer */
+  footer {
+    padding: 40px 0;
+    border-top: 1px solid var(--card-border);
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.9em;
+  }
+
+  footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+    margin: 0 12px;
+    transition: color 0.2s;
+  }
+
+  footer a:hover { color: var(--gold); }
+
+  .footer-links { margin-bottom: 16px; }
+
+  .youtube-link {
+    color: var(--text-dim);
+    font-size: 0.9em;
+    margin-top: 8px;
+  }
+
+  .youtube-link a { color: var(--text-muted); }
+
+  /* Responsive */
+  @media (max-width: 880px) {
+    .hero {
+      grid-template-columns: 1fr;
+      gap: 48px;
+      padding: 48px 0 40px;
+    }
+    .hero-text h1 { font-size: 2.6em; }
+    .hero-screenshot img { max-width: 260px; }
+
+    nav { display: none; }
+
+    .steps, .features { grid-template-columns: 1fr; }
+
+    .screenshots {
+      grid-template-columns: repeat(5, 220px);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+    }
+    .screenshots img { scroll-snap-align: center; }
+
+    .section-title { font-size: 1.9em; }
+    .bottom-cta h2 { font-size: 2em; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container header-inner">
+    <a href="#" class="logo">
+      <img src="assets/app-icon.png" alt="Scrambly app icon" class="logo-icon">
+      <span class="logo-name">Scrambly</span>
+    </a>
+    <nav>
+      <ul>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#screenshots">Screenshots</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </nav>
+    <a href="[APP_STORE_URL]" class="header-cta">Download</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container" style="display: contents;">
+      <div class="hero-text">
+        <h1>A calm word game. <span class="accent">Find every anagram.</span></h1>
+        <p>Unscramble the letters and find every word that uses all of them. No timers that panic you. No paywalls. Just letters and a little quiet time for your brain.</p>
+        <a href="[APP_STORE_URL]" class="app-store-badge">
+          <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download Scrambly on the App Store">
+        </a>
+      </div>
+      <div class="hero-screenshot">
+        <img src="assets/screenshot-hero.png" alt="Scrambly gameplay screenshot showing scrambled letter tiles and answer slots">
+      </div>
+    </div>
+  </section>
+
+  <section id="how-it-works">
+    <div class="container">
+      <div class="section-eyebrow">How It Works</div>
+      <h2 class="section-title">Three steps to your next anagram</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">Step 1</div>
+          <h3>See the scramble</h3>
+          <p>Each puzzle gives you a set of letters, scrambled into tiles. You have 60 seconds.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">Step 2</div>
+          <h3>Tap or swipe to spell</h3>
+          <p>Build words by tapping letters in order, or swiping through them like a connect-the-dots.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">Step 3</div>
+          <h3>Find every word</h3>
+          <p>Every answer uses all the letters. Find each anagram before time runs out.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="container">
+      <div class="section-eyebrow">Features</div>
+      <h2 class="section-title">Everything you need, nothing you don't</h2>
+      <div class="features">
+        <div class="feature">
+          <h3>Real anagram puzzles</h3>
+          <p>Hundreds of hand-vetted anagram groups using common English words. No obscure trivia.</p>
+        </div>
+        <div class="feature">
+          <h3>Tap or swipe</h3>
+          <p>Pick whichever input feels right. Swap anytime in settings.</p>
+        </div>
+        <div class="feature">
+          <h3>Game Center leaderboard</h3>
+          <p>Submit your highest single-round score and climb the global ranks.</p>
+        </div>
+        <div class="feature">
+          <h3>Detailed stats</h3>
+          <p>Track your high score, total words found, longest word, streaks, and more.</p>
+        </div>
+        <div class="feature">
+          <h3>iPhone &amp; iPad</h3>
+          <p>Universal app with layouts tuned for both. Portrait or landscape on iPad.</p>
+        </div>
+        <div class="feature">
+          <h3>Free, no paywalls</h3>
+          <p>Free to download and play. No coins, no premium tiers, no nagging.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="screenshots">
+    <div class="container">
+      <div class="section-eyebrow">See It In Action</div>
+      <h2 class="section-title">A clean, focused word game</h2>
+      <div class="screenshots">
+        <img src="assets/screenshot-1.png" alt="Scrambly 4-letter anagram puzzle gameplay">
+        <img src="assets/screenshot-2.png" alt="Scrambly 6-letter anagram puzzle showing every word uses all the letters">
+        <img src="assets/screenshot-3.png" alt="Scrambly 7-letter anagram puzzle for advanced players">
+        <img src="assets/screenshot-4.png" alt="Scrambly statistics dashboard showing high score and streak">
+        <img src="assets/screenshot-5.png" alt="Scrambly perfect score round end celebration screen">
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="container">
+      <div class="section-eyebrow">FAQ</div>
+      <h2 class="section-title">Questions? Answers.</h2>
+      <div class="faq">
+        <details>
+          <summary>Do words have to use all the letters?</summary>
+          <p>Yes. Every answer in Scrambly is a full anagram of the letters shown — meaning it uses every letter exactly once. No sub-words, no partial answers. If you see six tiles, every valid word uses all six letters.</p>
+        </details>
+        <details>
+          <summary>Where do the words come from?</summary>
+          <p>Scrambly uses a hand-curated list of real anagram groups built from common English words. Sourced from public educational materials and chosen so you'll recognize most of the answers when you see them.</p>
+        </details>
+        <details>
+          <summary>Is it really free?</summary>
+          <p>Yes. Free to download, free to play. The app is supported by occasional ads between rounds. No in-app purchases, no premium tier, no paywalls of any kind.</p>
+        </details>
+        <details>
+          <summary>Does it work on iPad?</summary>
+          <p>Scrambly is a universal app with layouts designed for both iPhone and iPad. On iPad, both portrait and landscape orientations are supported, and the game reflows to take advantage of the bigger screen.</p>
+        </details>
+        <details>
+          <summary>Do I need an account?</summary>
+          <p>No. Scrambly works without any account. Game Center is optional — sign in to use the leaderboard, or skip it and play offline.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="bottom-cta">
+    <div class="container">
+      <h2>Ready to find your first anagram?</h2>
+      <p>Free on iPhone and iPad. No accounts, no nonsense, no nagging.</p>
+      <a href="[APP_STORE_URL]" class="app-store-badge">
+        <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download Scrambly on the App Store">
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="mailto:info@apptato.com">Contact</a>
+    </div>
+    <div class="youtube-link">
+      Made by Peter Li · <a href="https://youtube.com/@apptato">Apptato on YouTube</a>
+    </div>
+    <div style="margin-top: 16px;">© 2026 Peter Li. All rights reserved.</div>
+  </div>
+</footer>
+
+</body>
+</html>
